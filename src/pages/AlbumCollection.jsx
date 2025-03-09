@@ -1,9 +1,12 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { downarrowIcon, searchIcon, viewIcon } from "../assets/icons";
+import { useCollections } from "../contexts/CollectionsContext";
 
-function AlbumCollection({ collections, setFilterType, filterType, types }) {
+function AlbumCollection() {
+  const { collections, setFilterType, filterType, types } = useCollections();
   const [search, setSearch] = useState("");
+
   const filteredCollections = collections.filter(
     (collection) =>
       (filterType === "" || collection.type === filterType) &&
@@ -14,24 +17,25 @@ function AlbumCollection({ collections, setFilterType, filterType, types }) {
     <div className="p-5 mx-auto ">
       <div className="shadow rounded p-3  bg-white">
         <div className="flex items-center gap-4 mb-4">
+          {/* Searchbar */}
           <div className="relative w-[250px]">
             <input
               type="text"
               placeholder="Search"
-              className="border border-[#C2CAD3] p-2 w-full rounded-lg pr-10 
-             focus:outline-none focus:ring-2 focus:ring-blue-500 
-             placeholder-[#C2CAD3] font-medium"
+              className="border border-[#C2CAD3] px-2 py-1.5 w-full rounded-lg pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-[#C2CAD3] font-medium text-sm h-8"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search"
             />
-            <div className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
-              <img src={searchIcon} alt="Search Icon" className="w-4 h-4" />
+            <div className="absolute inset-y-0 right-2 flex items-center cursor-pointer h-full">
+              <img src={searchIcon} alt="Search Icon" className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="relative ">
+
+          {/* Filter */}
+          <div className="relative">
             <select
-              className="border p-2 rounded-lg bg-[#E1E4E9] text-sm appearance-none pr-8 cursor-pointer"
+              className="border border-[#C2CAD3] px-2 py-1.5 w-full rounded-lg bg-[#E1E4E9] text-xs font-medium appearance-none pr-8 cursor-pointer h-8"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
             >
@@ -42,7 +46,7 @@ function AlbumCollection({ collections, setFilterType, filterType, types }) {
                 </option>
               ))}
             </select>
-            <div className="absolute inset-y-0 right-3 flex items-center ">
+            <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
               <img
                 src={downarrowIcon}
                 alt="Dropdown Icon"
@@ -51,13 +55,14 @@ function AlbumCollection({ collections, setFilterType, filterType, types }) {
             </div>
           </div>
         </div>
+        {/* Collections Table */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead className="text-sm">
-              <tr className="text-left border-b">
+              <tr className="text-left border-b border-[#C2CAD3]">
                 <th className="p-2 font-medium">Collection Name</th>
                 <th className="p-2 font-medium">Type</th>
-                <th className="p-2 font-medium">Songs</th>
+                <th className="p-2 font-medium">Song Count</th>
                 <th className="p-2 font-medium">Duration</th>
                 <th className="p-2 font-medium">Size</th>
                 <th className="p-2 font-medium">Released On</th>
@@ -73,7 +78,7 @@ function AlbumCollection({ collections, setFilterType, filterType, types }) {
                 .map((collection) => (
                   <tr
                     key={collection?.id}
-                    className="hover:bg-gray-100 text-xs border-b"
+                    className="hover:bg-gray-100 text-xs border-b border-[#E1E4E9]"
                   >
                     <td className="p-2">
                       <div className="flex flex-col">
@@ -125,7 +130,8 @@ function AlbumCollection({ collections, setFilterType, filterType, types }) {
     </div>
   );
 }
-//size calculation
+
+//size formatting
 const formatSize = (bytes) => {
   if (bytes < 1024 * 1024) {
     return `${(bytes / 1024).toFixed(2)} KB`;
